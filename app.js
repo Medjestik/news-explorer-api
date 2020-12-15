@@ -1,0 +1,36 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const { errors } = require('celebrate');
+const { limiter } = require('./middlewares/limiter.js');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const routes = require('./routes/index.js');
+const errorsHandler = require('./middlewares/errorsHandler.js');
+
+const { PORT = 3000 } = process.env;
+
+const app = express();
+
+mongoose.connect('mongodb://localhost:27017/news', {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
+
+app.use(limiter);
+app.use(helmet());
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
+app.use(routes);
+app.use(errorLogger);
+app.use(errors());
+app.use(errorsHandler);
+
+app.listen(PORT, () => {
+  console.log(`Ссылка на сервер - http://localhost:${PORT}`);
+});
