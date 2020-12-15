@@ -8,12 +8,11 @@ const { limiter } = require('./middlewares/limiter.js');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/index.js');
 const errorsHandler = require('./middlewares/errorsHandler.js');
-
-const { PORT = 3000 } = process.env;
+const { PORT, MONGODB } = require('./utils/env-config.js');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/news', {
+mongoose.connect(MONGODB, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -31,6 +30,4 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorsHandler);
 
-app.listen(PORT, () => {
-  console.log(`Ссылка на сервер - http://localhost:${PORT}`);
-});
+app.listen(PORT);

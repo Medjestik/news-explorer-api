@@ -5,6 +5,7 @@ const ConflictError = require('../errors/conflict-request-err.js');
 const NotFoundError = require('../errors/not-found-err.js');
 const UnauthorizedError = require('../errors/unauthorized-err.js');
 const { errMessage } = require('../utils/errorMessages.js');
+const { NODE_ENV, JWT_SECRET } = require('../utils/env-config.js');
 
 module.exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
@@ -30,7 +31,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        'some-secret-key',
+        NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
         { expiresIn: '7d' },
       );
       res.send({ token });
