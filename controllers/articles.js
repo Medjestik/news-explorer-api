@@ -19,7 +19,10 @@ module.exports.createArticle = (req, res, next) => {
   Article.create({
     keyword, title, text, date, source, link, image, owner: _id,
   })
-    .then((articles) => res.send(articles))
+    .then((article) => {
+      const { owner, ...data } = article.toObject();
+      res.send(data);
+    })
     .catch(next);
 };
 
@@ -31,7 +34,10 @@ module.exports.deleteArticle = (req, res, next) => {
     .then((article) => {
       if (article.owner.toString() === userId) {
         article.remove()
-          .then((removeArticle) => res.send(removeArticle));
+          .then((removeArticle) => {
+            const { owner, ...data } = removeArticle.toObject();
+            res.send(data);
+          });
       } else {
         throw new ForbiddenError(errMessage.forbiddenErr);
       }

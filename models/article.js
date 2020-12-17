@@ -28,7 +28,6 @@ const articleSchema = new mongoose.Schema({
       validator(value) {
         return /https?:\/\/\S+/.test(value);
       },
-      message: (props) => `${props.value} не корректная ссылка`,
     },
   },
   image: {
@@ -38,7 +37,6 @@ const articleSchema = new mongoose.Schema({
       validator(value) {
         return /https?:\/\/\S+/.test(value);
       },
-      message: (props) => `${props.value} не корректная ссылка`,
     },
   },
   owner: {

@@ -6,8 +6,8 @@ const { NODE_ENV, JWT_SECRET } = require('../utils/env-config.js');
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization && !authorization.startsWith('Bearer ')) {
-    return next(new UnauthorizedError(errMessage.unauthorizedErr));
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    throw new UnauthorizedError(errMessage.unauthorizedErr);
   }
 
   const token = authorization.replace('Bearer ', '');

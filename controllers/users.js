@@ -14,7 +14,10 @@ module.exports.createUser = (req, res, next) => {
       password: hash,
       name: req.body.name,
     }))
-    .then((user) => res.send(user))
+    .then((user) => {
+      const { password, ...data } = user.toObject();
+      res.send(data);
+    })
     .catch((err) => {
       if (err.name === 'MongoError' && err.code === 11000) {
         next(new ConflictError(errMessage.conflictErr));
